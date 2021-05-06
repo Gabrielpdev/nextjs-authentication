@@ -1,6 +1,6 @@
 import Router from 'next/router';
-import { setCookie } from 'nookies';
-import { createContext, useState } from 'react';
+import { setCookie, parseCookies } from 'nookies';
+import { createContext, useEffect, useState } from 'react';
 import { api } from '../services/api';
 
 type User =  {
@@ -26,8 +26,20 @@ export function AuthProvider({children}) {
   const [ user, setUser ] = useState<User>();
   const isAuthenticated = !!user;
   
-  async function signIn({email, password}: SignInCredentials){
+  useEffect(() => {
+    const { 'nextauth.token': token } = parseCookies();
 
+    if(token){
+      api.get('/me').then(response => {
+        const { email, permission, roles } = response.data;
+
+        setUser({ email, permission, roles})
+      })
+    }
+
+  },[])
+
+  async function signIn({email, password}: SignInCredentials){
     try{
       const response = await api.post('sessions', {
         email,
@@ -50,6 +62,8 @@ export function AuthProvider({children}) {
         permission,
         roles
       })
+
+      api.defaults.headers['Authorization'] = `Bearer ${token}`
 
       Router.push('/dashboard');
       
