@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
+import { Can } from '../components/Can';
 import { AuthContext } from '../context/AuthContext'
+import { useCan } from '../hooks/useCan';
 import { setupAPIClient } from '../services/api';
 import { api } from '../services/apiClient';
 import styles from '../styles/Home.module.css';
@@ -16,7 +18,12 @@ export default function Dashboard() {
 
   return (
     <div className={styles.container}>
-      DASHBOARD
+      <h1>DASHBOARD</h1>
+      <strong>User: {user?.email}</strong>
+
+      <Can permissions={['metrics.list']} >
+        <strong>Métricas</strong>
+      </Can>
     </div>
   )
 }
@@ -24,7 +31,6 @@ export default function Dashboard() {
 export const getServerSideProps = withSSRAuth(async (ctx) => {  
   const apiClient = setupAPIClient(ctx);
   const response = await apiClient.get('/me')
-  console.log(response)
 
   return {
     props: {}
