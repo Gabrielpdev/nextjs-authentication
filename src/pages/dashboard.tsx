@@ -8,7 +8,7 @@ import styles from '../styles/Home.module.css';
 import { withSSRAuth } from '../utils/withSSRAuth';
 
 export default function Dashboard() {
-  const { user } = useContext(AuthContext)
+  const { user, signOut } = useContext(AuthContext)
 
   useEffect(() => {
     api.get('/me')
@@ -24,6 +24,8 @@ export default function Dashboard() {
       <Can permissions={['metrics.list']} >
         <strong>Métricas</strong>
       </Can>
+
+      <button onClick={signOut} >SignOut</button>
     </div>
   )
 }

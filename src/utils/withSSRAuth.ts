@@ -10,7 +10,7 @@ type WithSSRAuthOptions = {
   roles?: string[];
 }
 
-export function withSSRAuth<P>(fn: GetServerSideProps<P>, options: WithSSRAuthOptions): GetServerSideProps{
+export function withSSRAuth<P>(fn: GetServerSideProps<P>, options?: WithSSRAuthOptions): GetServerSideProps{
 
   return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
     const cookies = parseCookies(ctx);
